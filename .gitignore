@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.webpack_cache/
+logs/
+
+.env
+.env.*
+
+.DS_Store
+Thumbs.db
