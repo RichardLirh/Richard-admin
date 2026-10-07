@@ -9,6 +9,11 @@
 
       <!-- 中间导航菜单 -->
       <div class="header-center">
+        <div class="equipment-management" :class="{ 'active-tab': $route.path === '/task-monitor' }"
+          @click="$router.push('/task-monitor')">
+          <i class="el-icon-data-line" aria-hidden="true"></i>
+          <span class="nav-text">任务监控</span>
+        </div>
         <div class="equipment-management" :class="{
           'active-tab':
             $route.path === '/home' ||

@@ -43,6 +43,11 @@ module.exports = defineConfig({
   devServer: {
     port: 8001, // 指定端口为 8001
     proxy: {
+      '/task-api': {
+        target: process.env.TASK_API_UPSTREAM || 'http://127.0.0.1:8010',
+        changeOrigin: true,
+        pathRewrite: { '^/task-api': '' }
+      },
       '/richard': {
         target: 'http://127.0.0.1:8002',
         changeOrigin: true

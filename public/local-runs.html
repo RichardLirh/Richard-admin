@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <title>小智任务监控 · RAIOT</title>
+  <link rel="stylesheet" href="./local-runs.css">
+  <script src="./local-runs.js" defer></script>
+</head>
+<body>
+  <aside class="sidebar">
+    <a class="brand" href="./local-runs.html"><span class="brand-mark">R</span><span>RAIOT<small>小智工作台</small></span></a>
+    <div class="nav-label">运行管理</div>
+    <a class="nav-item active" href="./local-runs.html"><span>◉</span> 任务监控</a>
+    <a class="nav-item" href="./#/home"><span>▤</span> 设备与用户管理 ↗</a>
+    <div class="sidebar-note"><strong>本地只读模式</strong><p>查看 App 与硬件发起的任务。需要用户确认的操作，请回到 App 完成。</p></div>
+  </aside>
+  <main>
+    <header><div><div class="eyebrow">OPERATIONS / RUNS</div><h1>任务监控</h1><p class="subtitle">跟踪每一次执行，定位需要关注的问题。</p></div><button id="settings-open" class="secondary">连接设置</button></header>
+    <div class="connection-bar"><span><i id="connection-dot"></i><span id="connection-status" role="status">未连接任务服务</span></span><span id="last-sync">尚未同步</span></div>
+    <section class="stats" aria-label="任务概览">
+      <div class="stat"><span>任务总数</span><strong id="stat-total">—</strong></div><div class="stat"><span>执行中</span><strong id="stat-running">—</strong></div><div class="stat"><span>等待用户确认</span><strong id="stat-waiting">—</strong></div><div class="stat"><span>异常任务</span><strong id="stat-failed">—</strong></div>
+    </section>
+    <div id="page-error" class="error-banner" role="alert" hidden></div>
+    <section class="workspace">
+      <div class="runs-panel">
+        <div class="panel-heading"><h2>全部任务 <span id="visible-count"></span></h2><button id="refresh" class="secondary compact">刷新</button></div>
+        <div class="filters"><label class="sr-only" for="search">搜索任务</label><input id="search" type="search" placeholder="搜索任务内容或 ID"><label class="sr-only" for="status-filter">筛选状态</label><select id="status-filter"><option value="">全部状态</option value="queued">排队中</option><option value="running">执行中</option><option value="waiting_approval">等待确认</option><option value="completed">已完成</option><option value="cancelling">取消中</option><option value="cancelled">已取消</option><option value="failed">执行失败</option></select></div>
+        <div id="runs-list" class="runs-list" aria-label="任务列表"><div class="empty"><span>◎</span><h3>连接后查看任务</h3><p>在连接设置中填写任务服务地址与只读令牌。</p></div></div>
+        <label class="refresh-choice"><input id="auto-refresh" type="checkbox" checked> 每 10 秒刷新 <span>仅在页面可见时</span></label>
+      </div>
+      <div class="detail-panel" id="detail-panel"><div class="empty detail-empty"><span>↗</span><h3>选择一个任务</h3><p>查看执行过程、资源绑定及异常详情。</p></div></div>
+    </section>
+    <footer>RAIOT · 本地开发工作台 <span>管理端仅提供运行观测，审批权保留在用户端。</span></footer>
+  </main>
+  <dialog id="settings-dialog" aria-labelledby="settings-title">
+    <form id="settings-form"><div class="dialog-heading"><h2 id="settings-title">连接任务服务</h2><button type="button" id="settings-close" class="icon-button" aria-label="关闭">×</button></div><p>使用独立的 Admin 只读令牌；无需登录 Java 管理服务。</p><label for="api-base">API 地址</label><input id="api-base" required placeholder="/task-api 或 http://127.0.0.1:8010" autocomplete="url"><small>本地开发默认经 /task-api 代理访问任务服务。</small><label for="api-token">Admin 只读令牌</label><input id="api-token" type="password" required autocomplete="off" spellcheck="false"><small>令牌仅保存在当前标签页会话，不写入地址、镜像或源代码。</small><p id="settings-error" class="form-error" role="alert"></p><div class="dialog-actions"><button type="button" id="disconnect" class="secondary">清除连接</button><button type="submit" class="primary">保存并连接</button></div></form>
+  </dialog>
+</body>
+</html>

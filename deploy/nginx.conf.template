@@ -1,0 +1,39 @@
+server {
+    listen 80;
+    server_name _;
+    root /usr/share/nginx/html;
+    index index.html;
+    resolver 127.0.0.11 ipv6=off valid=10s;
+
+    add_header X-Content-Type-Options nosniff always;
+    add_header Referrer-Policy no-referrer always;
+
+    location = /health {
+        default_type application/json;
+        return 200 '{"status":"ok","service":"Richard-admin"}';
+    }
+
+    location /task-api/ {
+        limit_except GET { deny all; }
+        set $task_upstream ${TASK_API_UPSTREAM};
+        rewrite ^/task-api/(.*)$ /$1 break;
+        proxy_pass http://$task_upstream;
+        proxy_set_header Authorization $http_authorization;
+        proxy_set_header Host $host;
+        proxy_http_version 1.1;
+        proxy_buffering off;
+        proxy_read_timeout 30s;
+        add_header Cache-Control "no-store" always;
+    }
+
+    location /richard/ {
+        set $java_upstream ${JAVA_API_UPSTREAM};
+        proxy_pass http://$java_upstream;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+
+    location = /local-runs.html { add_header Cache-Control "no-store"; }
+    location = /local-runs.js { add_header Cache-Control "no-cache"; }
+    location / { try_files $uri $uri/ /index.html; }
+}

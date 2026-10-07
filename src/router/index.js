@@ -5,6 +5,12 @@ Vue.use(VueRouter)
 
 const routes = [
   {
+    path: '/task-monitor',
+    name: 'TaskMonitor',
+    component: () => import('../views/TaskMonitor.vue'),
+    meta: { requiresAuth: true, title: '任务监控' }
+  },
+  {
     path: '/',
     name: 'welcome',
     component: function () {
@@ -217,7 +223,7 @@ VueRouter.prototype.push = function push(location) {
 }
 
 // 需要登录才能访问的路由
-const protectedRoutes = ['home', 'RoleConfig', 'DeviceManagement', 'UserManagement', 'ModelConfig', 'KnowledgeBaseManagement', 'KnowledgeFileUpload']
+const protectedRoutes = ['home', 'RoleConfig', 'DeviceManagement', 'UserManagement', 'ModelConfig', 'KnowledgeBaseManagement', 'KnowledgeFileUpload', 'TaskMonitor']
 
 // 路由守卫
 router.beforeEach((to, from, next) => {
