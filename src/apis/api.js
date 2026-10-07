@@ -18,7 +18,8 @@ import knowledgeBase from './module/knowledgeBase.js'
  * 开发时自动读取使用.env.development文件
  * 编译时自动读取使用.env.production文件
  */
-const DEV_API_SERVICE = process.env.VUE_APP_API_BASE_URL
+// Clean Docker builds have no private .env file; use the same-origin proxy.
+const DEV_API_SERVICE = (process.env.VUE_APP_API_BASE_URL || '/richard').replace(/\/$/, '')
 
 /**
  * 根据开发环境返回接口url
