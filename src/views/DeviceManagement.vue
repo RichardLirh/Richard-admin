@@ -151,6 +151,9 @@ export default {
       userApi: null,
       firmwareTypes: [],
       mqttServiceAvailable: false, // MQTT服务是否可用
+      statusTimer: null,
+      statusFetching: false,
+      statusDisposed: false,
     };
   },
   computed: {
@@ -197,6 +200,13 @@ export default {
     if (agentId) {
       this.fetchBindDevices(agentId);
     }
+    this.statusTimer = setInterval(() => {
+      if (this.currentAgentId && !document.hidden) this.fetchDeviceStatus(this.currentAgentId);
+    }, 15000);
+  },
+  beforeDestroy() {
+    this.statusDisposed = true;
+    clearInterval(this.statusTimer);
   },
   created() {
     this.getFirmwareTypes()
@@ -395,10 +405,11 @@ export default {
 
     // 获取设备状态
     fetchDeviceStatus(agentId) {
-      // 开启表格等待状态，处理动态加载表头导致鼠标所在行的hover事件无法移除的问题
-      this.loading = true;
+      if (this.statusDisposed || this.statusFetching) return;
+      this.statusFetching = true;
       Api.device.getDeviceStatus(agentId, ({ data }) => {
-        this.loading = false;
+        this.statusFetching = false;
+        if (this.statusDisposed || agentId !== this.currentAgentId) return;
         if (data.code === 0) {
           try {
             // 解析后端返回的设备状态JSON
@@ -438,7 +449,9 @@ export default {
           const statusInfo = deviceStatusMap[mqttClientId];
 
           let isOnline = false;
-          if (statusInfo.isAlive === true) {
+          if (typeof statusInfo.mqttConnected === 'boolean') {
+            isOnline = statusInfo.mqttConnected;
+          } else if (statusInfo.isAlive === true) {
             isOnline = true;
           } else if (statusInfo.isAlive === false) {
             isOnline = false;

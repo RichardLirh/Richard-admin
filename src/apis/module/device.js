@@ -99,10 +99,8 @@ export default {
                 callback(res);
             })
             .networkFail((err) => {
-                console.error('获取设备状态失败:', err);
-                RequestService.reAjaxFun(() => {
-                    this.getDeviceStatus(agentId, callback);
-                });
+                // The view polls again; do not retain retries after navigation.
+                callback({ data: { code: -1, msg: '设备状态暂时不可用' } });
             }).send();
     },
 }
